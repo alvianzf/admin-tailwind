@@ -61,7 +61,7 @@ function BookDataTable({ bookData, searchInput }) {
     };
 
     const handleCheck = (bookingCode) => {
-        navigate(`eticket?bookingno=${bookingCode}`)
+        navigate(`https://tiketq.com/eticket?bookingno=${bookingCode}`)
     };
 
     const handleIssue = async (bookingCode, nominal) => {
