@@ -1,7 +1,7 @@
 module.exports = {
     apps: [
       {
-        name: 'my-react-app',
+        name: 'admin',
         script: './start-serve.sh',
         env: {
           NODE_ENV: 'production',
