@@ -61,8 +61,10 @@ function BookDataTable({ bookData, searchInput }) {
     };
 
     const handleCheck = (bookingCode) => {
-        navigate(`https://tiketq.com/eticket?bookingno=${bookingCode}`)
+        const url = `https://tiketq.com/eticket?bookingno=${bookingCode}`;
+        window.open(url, '_blank');
     };
+    
 
     const handleIssue = async (bookingCode, nominal) => {
         try {
