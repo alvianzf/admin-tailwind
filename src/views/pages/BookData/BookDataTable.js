@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useTable, useGlobalFilter, usePagination } from 'react-table';
 import { formatDate, formatNominal } from '../../../utils/formatNumber';
-import { Tooltip } from 'react-tooltip';
+// import { Tooltip } from 'react-tooltip';
 import { issueTicket } from '../../../services/BookDataService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -40,7 +40,7 @@ function BookDataTable({ bookData, searchInput }) {
                     >
                         <i className='fa fa-trash'></i>
                     </button>
-                    <Tooltip id="my-tooltip" />
+                    {/* <Tooltip id="my-tooltip" /> */}
                     <ToastContainer />
                 </div>
             )
