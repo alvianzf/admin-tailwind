@@ -4,7 +4,7 @@ module.exports = {
         name: 'admin',
         script: 'serve',
         args: '-s build -l 3030',
-        isntances: 1,
+        instances: 1,
         exec_mode: 'fork',
         env: {
           PORT: 3030,
