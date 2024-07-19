@@ -1,11 +1,8 @@
-// ecosystem.config.js
 module.exports = {
     apps: [
       {
-        name: 'admin',
-        script: 'npx',
-        args: 'serve -s build -l 3030',
-        interpreter: 'none',
+        name: 'my-react-app',
+        script: './start-serve.sh',
         env: {
           NODE_ENV: 'production',
         },
