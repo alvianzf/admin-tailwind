@@ -14,24 +14,25 @@ function UserList() {
         e.preventDefault();
 
         if (!username || !password || !challenge) {
-            toast.warning('mohon isi semua form');
+            toast.warning('Mohon isi semua form');
             return;
         }
 
         if (password !== challenge) {
-            toast.warning("password harus sama");
+            toast.warning("Password harus sama");
             return;
         }
 
         try {
-            await registerUser({username, password});
+            await registerUser({ username, password });
             
             setUsername('');
             setPassword('');
             setChallenge('');
-            toast.success("Berhasil menambahkan user baru: " + username);
-        } catch {
-            toast.error("terjadi kesalahan, mohon refresh halaman ini");
+            toast.success(`Berhasil menambahkan user baru: ${username}`);
+        } catch (error) {
+            toast.error("Terjadi kesalahan, mohon refresh halaman ini");
+            console.error("Error registering user:", error);
         }
     };
 
@@ -39,8 +40,9 @@ function UserList() {
         try {
             await deleteUser(id);
             toast.success('User deleted successfully');
-        } catch {
+        } catch (error) {
             toast.error('Failed to delete user');
+            console.error("Error deleting user:", error);
         }
     };
 
@@ -58,26 +60,26 @@ function UserList() {
                     <form className='flex w-2/4 flex-col' onSubmit={handleSubmit}>
                         <input
                             type="text"
-                            placeholder="username"
-                            className='border border-gray-300 rounded-md px-2'
+                            placeholder="Username"
+                            className='border border-gray-300 rounded-md px-2 mb-2'
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                         />
                         <input
                             type="password"
-                            placeholder="password"
-                            className='border border-gray-300 rounded-md px-2'
+                            placeholder="Password"
+                            className='border border-gray-300 rounded-md px-2 mb-2'
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
                         <input
                             type="password"
-                            placeholder="ulangi password"
-                            className='border border-gray-300 rounded-md px-2'
+                            placeholder="Ulangi Password"
+                            className='border border-gray-300 rounded-md px-2 mb-2'
                             value={challenge}
                             onChange={(e) => setChallenge(e.target.value)}
                         />
-                        <button className='bg-green-500 rounded-lg px-4 py-2 my-4 text-white hover:bg-green-800'>Buat user</button>
+                        <button className='bg-green-500 rounded-lg px-4 py-2 text-white hover:bg-green-800'>Buat user</button>
                     </form>
                 </div>
                 <hr className='my-4' />
