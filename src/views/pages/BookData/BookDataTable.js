@@ -130,6 +130,7 @@ function BookDataTable({ bookData, searchInput }) {
                         prepareRow(row);
                         return (
                             <tr key={row.original._id} {...row.getRowProps()} className="border-b text-xs">
+                        {console.log(row)}
                                 {row.cells.map(cell => (
                                     <td key={cell.column.id} {...cell.getCellProps()} className="p-2 border">
                                         {cell.render('Cell')}

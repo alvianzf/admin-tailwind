@@ -15,7 +15,8 @@ function Dashboard() {
   return (
     <Layout>
       <div>
-        <h1>Dashboard</h1>
+      <h1 className="text-2xl font-bold mb-4">Dahsboard</h1>
+      <hr className='my-2' />
       </div>
     </Layout>
   )
