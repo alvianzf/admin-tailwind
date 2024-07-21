@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
 import List from './List';
 import { toast } from 'react-toastify';
@@ -9,6 +9,10 @@ function UserList() {
     const [password, setPassword] = useState('');
     const [challenge, setChallenge] = useState('');
     const { registerUser, users, deleteUser } = useContext(UserContext);
+
+    useEffect(() => {
+        document.title = "Manajemen Pengguna"
+    }, [])
 
     const handleSubmit = async (e) => {
         e.preventDefault();

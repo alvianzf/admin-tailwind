@@ -12,6 +12,8 @@ function Admin() {
     const [isActive, setIsActive] = useState(false)
     
     useEffect(() => {
+
+        document.title = "Administrasi Akun"
         setIsActive(false)
     }, [])
 

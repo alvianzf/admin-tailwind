@@ -12,6 +12,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    document.title = "Login"
     if (isAuthenticated) {
       navigate('/');
     }
