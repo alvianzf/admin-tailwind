@@ -18,9 +18,19 @@ const BookDataProvider = ({ children }) => {
         }
     }
 
+    const deleteBooking = async (id) => {
+        try {
+            await bookDataService.deleteBooking(id);
+            getBookData();
+        } catch {
+
+        }
+    }
+
     const value = {
         bookData,
-        getBookData
+        getBookData,
+        deleteBooking
     }
 
     return <BookingContext.Provider value={ value }>{ children }</BookingContext.Provider>

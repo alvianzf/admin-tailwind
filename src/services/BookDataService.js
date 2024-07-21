@@ -18,3 +18,12 @@ export const issueTicket = async (payload) => {
         return err
     }
 }
+
+export const deleteBooking = async (payload) => {
+  try {
+    const response = await API.deleteBooking(payload);
+    return response.data;
+  } catch (error) {
+    return error;
+  }
+}

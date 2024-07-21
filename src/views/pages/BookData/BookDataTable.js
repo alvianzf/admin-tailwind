@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { useTable, useGlobalFilter, usePagination } from 'react-table';
 import { formatDate, formatNominal } from '../../../utils/formatNumber';
 // import { Tooltip } from 'react-tooltip';
-import { issueTicket } from '../../../services/BookDataService';
+import { issueTicket, deleteBooking } from '../../../services/BookDataService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
@@ -55,9 +55,13 @@ function BookDataTable({ bookData, searchInput }) {
         { Header: 'Tgl Booking', accessor: 'book_date', Cell: ({ value }) => formatDate(value) },
     ], []);
 
-    const handleDelete = (id) => {
-        console.log('delete', id);
-        toast.success("Deleted" + id);
+    const handleDelete =  async (id) => {
+        try {
+            await deleteBooking(id)
+            toast.success("Deleted " + id);
+        } catch (error) {
+            toast.warning("Gagal menghapus data")
+        }
     };
 
     const handleCheck = (bookingCode) => {

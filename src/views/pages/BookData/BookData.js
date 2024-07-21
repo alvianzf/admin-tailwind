@@ -17,7 +17,6 @@ function BookData() {
         try {
             await getBookData();
         } catch (err) {
-            console.log(err);
         }
     };
 

@@ -19,6 +19,11 @@ export class API {
     return apiClient.get('/booking-data');
   }
 
+  static deleteBooking(id) {
+    console.log(id)
+    return apiClient.delete(`/booking-data/${id}`);
+  } 
+
   static issueTicket(payload) {
     return apiClient.post('/payment', payload)
   }
