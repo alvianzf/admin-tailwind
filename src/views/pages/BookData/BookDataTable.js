@@ -126,7 +126,7 @@ function BookDataTable({ bookData, searchInput }) {
                     ))}
                 </thead>
                 <tbody {...getTableBodyProps()}>
-                    {page.map((row) => {
+                    {page.reverse().map((row) => {
                         prepareRow(row);
                         return (
                             <tr key={row.original._id} {...row.getRowProps()} className="border-b text-xs">
