@@ -75,6 +75,9 @@ function BookDataTable({ bookData, searchInput }) {
                 } catch (error) {
                     toast.warning("Gagal menghapus data");
                 }
+            },
+            willClose: () => {
+                setSwalProps({});
             }
         });
     };

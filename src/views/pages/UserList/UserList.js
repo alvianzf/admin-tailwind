@@ -46,7 +46,7 @@ function UserList() {
             show: true,
             title: 'Hapus user ini?',
             text: username,
-            icon: 'warning',
+            icon: 'question',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
@@ -59,6 +59,9 @@ function UserList() {
                     toast.error('Failed to delete user ' + username);
                     console.error("Error deleting user:", error);
                 }
+            },
+            willClose: () => {
+                setSwalProps({});
             }
         });
     };
@@ -66,7 +69,7 @@ function UserList() {
     return (
         <Layout>
             <div className='container mx-auto p-4'>
-                <SweetAlert2 {...swalProps} onConfirm={() => setSwalProps({})} onCancel={() => setSwalProps({})} />
+                <SweetAlert2 {...swalProps} />
                 <h1 className='text-2xl font-bold mb-4'>Tambah Pengguna</h1>
                 <hr className='my-4' />
                 <div className='flex w-1/2 justify-between'>
