@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useTable, useGlobalFilter, usePagination } from 'react-table';
 import { formatDate, formatNominal } from '../../../utils/formatNumber';
 // import { Tooltip } from 'react-tooltip';
@@ -6,9 +6,12 @@ import { issueTicket, deleteBooking } from '../../../services/BookDataService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
+import SweetAlert2 from 'react-sweetalert2';
 
 function BookDataTable({ bookData, searchInput }) {
     const navigate = useNavigate();
+    const [swalProps, setSwalProps] = useState({});
+
     const columns = useMemo(() => [
         { Header: 'Status', accessor: 'payment_status', Cell: ({ value }) => (value ? 'Issued' : 'Book') },
         {
@@ -35,7 +38,7 @@ function BookDataTable({ bookData, searchInput }) {
                     <button
                         data-tooltip-id="my-tooltip"
                         data-tooltip-content="Hapus data"
-                        onClick={() => handleDelete(row.original._id)}
+                        onClick={() => handleDelete(row.original._id, row.original.bookingCode)}
                         className="text-red-500"
                     >
                         <i className='fa fa-trash'></i>
@@ -55,20 +58,31 @@ function BookDataTable({ bookData, searchInput }) {
         { Header: 'Tgl Booking', accessor: 'book_date', Cell: ({ value }) => formatDate(value) },
     ], []);
 
-    const handleDelete =  async (id) => {
-        try {
-            await deleteBooking(id)
-            toast.success("Deleted " + id);
-        } catch (error) {
-            toast.warning("Gagal menghapus data")
-        }
+    const handleDelete = (id, bookingCode) => {
+        setSwalProps({
+            show: true,
+            title: 'Hapus booking ini?',
+            text: `Booking code: ${bookingCode}`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Hapus',
+            preConfirm: async () => {
+                try {
+                    await deleteBooking(id);
+                    toast.success("Berhasil menghapus " + bookingCode);
+                } catch (error) {
+                    toast.warning("Gagal menghapus data");
+                }
+            }
+        });
     };
 
     const handleCheck = (bookingCode) => {
         const url = `https://tiketq.com/eticket?bookingno=${bookingCode}`;
         window.open(url, '_blank');
     };
-    
 
     const handleIssue = async (bookingCode, nominal) => {
         try {
@@ -117,6 +131,7 @@ function BookDataTable({ bookData, searchInput }) {
 
     return (
         <div className="overflow-x-auto">
+            <SweetAlert2 {...swalProps} onConfirm={() => setSwalProps({})} onCancel={() => setSwalProps({})} />
             <table {...getTableProps()} className="min-w-full bg-white border">
                 <thead>
                     {headerGroups.map((headerGroup, i) => (
@@ -134,7 +149,7 @@ function BookDataTable({ bookData, searchInput }) {
                         prepareRow(row);
                         return (
                             <tr key={row.original._id} {...row.getRowProps()} className="border-b text-xs">
-                        {console.log(row)}
+                                {console.log(row)}
                                 {row.cells.map(cell => (
                                     <td key={cell.column.id} {...cell.getCellProps()} className="p-2 border">
                                         {cell.render('Cell')}

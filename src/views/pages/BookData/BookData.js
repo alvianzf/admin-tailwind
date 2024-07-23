@@ -27,7 +27,7 @@ function BookData() {
         } else {
             navigate('/login');
         }
-    }, [isAuthenticated]);
+    }, [isAuthenticated, bookData]);
 
     return (
         <Layout>

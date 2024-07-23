@@ -21,7 +21,7 @@ function List({ users, handleDelete }) {
                                     <button className='text-green-500 font-bold py-1 hover:text-green-900'>
                                         <i className='fas fa-pen text-xs '></i>
                                     </button>
-                                    <button className='text-red-500 font-bold py-1 hover:text-red-900' onClick={() => handleDelete(user._id)}>
+                                    <button className='text-red-500 font-bold py-1 hover:text-red-900' onClick={() => handleDelete(user._id, user.username)}>
                                         <i className='fas fa-trash text-xs '></i>
                                     </button>
                                 </td>
