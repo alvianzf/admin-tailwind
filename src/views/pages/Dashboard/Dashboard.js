@@ -14,7 +14,7 @@ function Dashboard() {
     if (!isAuthenticated) {
       navigate('/login');
     }
-  }, [isAuthenticated, bookData])
+  }, [isAuthenticated, bookData, navigate])
   return (
     <Layout>
       <div>

@@ -5,11 +5,9 @@ import { formatDate, formatNominal } from '../../../utils/formatNumber';
 import { issueTicket, deleteBooking } from '../../../services/BookDataService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate } from 'react-router-dom';
 import SweetAlert2 from 'react-sweetalert2';
 
 function BookDataTable({ bookData, searchInput }) {
-    const navigate = useNavigate();
     const [swalProps, setSwalProps] = useState({});
 
     const columns = useMemo(() => [

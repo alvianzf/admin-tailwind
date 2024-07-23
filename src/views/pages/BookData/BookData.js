@@ -17,17 +17,24 @@ function BookData() {
         try {
             await getBookData();
         } catch (err) {
+            console.error('Failed to fetch book data:', err);
+            // Optionally show a user-friendly error message here
         }
     };
 
     useEffect(() => {
         document.title = "Data Booking";
-        if (isAuthenticated) {
-            fetchData();
-        } else {
-            navigate('/login');
+
+        const checkAuth = () => {
+            if (isAuthenticated) {
+                fetchData();
+            } else {
+                navigate('/login');
+            }
         }
-    }, [isAuthenticated, bookData]);
+
+        checkAuth();
+    }, [isAuthenticated, fetchData, navigate]);
 
     return (
         <Layout>
