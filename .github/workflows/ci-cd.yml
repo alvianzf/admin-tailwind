@@ -28,7 +28,7 @@ jobs:
       run: npm run build
 
     - name: Install sshpass
-      run: sudo apt-get install -y sshpass'
+      run: sudo apt-get install -y sshpass
 
     - name: Debug secrets
       env:
