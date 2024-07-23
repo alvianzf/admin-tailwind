@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useCallback } from 'react';
 import Layout from '../../components/Layout';
 import BookDataTable from './BookDataTable';
 import { BookingContext } from '../../../contexts/BookData/BookDataContext';
@@ -13,14 +13,14 @@ function BookData() {
     const [searchInput, setSearchInput] = useState('');
     const navigate = useNavigate();
 
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         try {
             await getBookData();
         } catch (err) {
             console.error('Failed to fetch book data:', err);
             // Optionally show a user-friendly error message here
         }
-    };
+    }, [getBookData]);
 
     useEffect(() => {
         document.title = "Data Booking";
