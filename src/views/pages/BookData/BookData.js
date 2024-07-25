@@ -18,9 +18,8 @@ function BookData() {
             await getBookData();
         } catch (err) {
             console.error('Failed to fetch book data:', err);
-            // Optionally show a user-friendly error message here
         }
-    }, [getBookData]);
+    }, []);
 
     useEffect(() => {
         document.title = "Data Booking";

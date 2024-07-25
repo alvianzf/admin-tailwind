@@ -27,7 +27,17 @@ const BookDataProvider = ({ children }) => {
         }
     }
 
+    const issueTicket = async (payload) => {
+        try {
+            await bookDataService.issueTicket()
+            getBookData();
+        } catch (error) {
+            return error
+        }
+    }
+
     const value = {
+        issueTicket,
         bookData,
         getBookData,
         deleteBooking

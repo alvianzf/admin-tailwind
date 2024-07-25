@@ -1,62 +1,20 @@
-import React, { useMemo, useState } from 'react';
+import React, { useContext, useMemo, useState, useCallback } from 'react';
 import { useTable, useGlobalFilter, usePagination } from 'react-table';
 import { formatDate, formatNominal } from '../../../utils/formatNumber';
-// import { Tooltip } from 'react-tooltip';
-import { issueTicket, deleteBooking } from '../../../services/BookDataService';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import SweetAlert2 from 'react-sweetalert2';
+import { BookingContext } from '../../../contexts/BookData/BookDataContext';
 
-function BookDataTable({ bookData, searchInput }) {
+const BookDataTable = ({ bookData, searchInput }) => {
     const [swalProps, setSwalProps] = useState({});
+    const { issueTicket, deleteBooking } = useContext(BookingContext);
 
-    const columns = useMemo(() => [
-        { Header: 'Status', accessor: 'payment_status', Cell: ({ value }) => (value ? 'Issued' : 'Book') },
-        {
-            Header: '',
-            accessor: 'actions',
-            Cell: ({ row }) => (
-                <div className="flex space-x-2">
-                    <button
-                        data-tooltip-id="my-tooltip"
-                        data-tooltip-content="Issue tiket"
-                        onClick={() => handleIssue(row.original.bookingCode, row.original.nominal)}
-                        className="text-blue-500"
-                    >
-                        <i className='fa fa-check'></i>
-                    </button>
-                    <button
-                        data-tooltip-id="my-tooltip"
-                        data-tooltip-content="Check tiket"
-                        onClick={() => handleCheck(row.original.bookingCode)}
-                        className="text-green-500"
-                    >
-                        <i className="fa fa-plane"></i>
-                    </button>
-                    <button
-                        data-tooltip-id="my-tooltip"
-                        data-tooltip-content="Hapus data"
-                        onClick={() => handleDelete(row.original._id, row.original.bookingCode)}
-                        className="text-red-500"
-                    >
-                        <i className='fa fa-trash'></i>
-                    </button>
-                    {/* <Tooltip id="my-tooltip" /> */}
-                    <ToastContainer />
-                </div>
-            )
-        },
-        { Header: 'Booking No', accessor: 'bookingCode' },
-        { Header: 'Nominal', accessor: 'nominal', Cell: ({ value }) => formatNominal(value) },
-        { Header: 'Berangkat', accessor: 'departureDate', Cell: ({ value }) => formatDate(value) },
-        { Header: 'Asal', accessor: 'origin' },
-        { Header: 'Tujuan', accessor: 'destination' },
-        { Header: 'No. HP', accessor: 'mobile_number' },
-        { Header: 'Nama', accessor: 'name' },
-        { Header: 'Tgl Booking', accessor: 'book_date', Cell: ({ value }) => formatDate(value) },
-    ], []);
+    const handleCheck = useCallback((bookingCode) => {
+        window.open(`https://tiketq.com/eticket?bookingno=${bookingCode}`, '_blank');
+    }, []);
 
-    const handleDelete = (id, bookingCode) => {
+    const handleDelete = useCallback((id, bookingCode) => {
         setSwalProps({
             show: true,
             title: 'Hapus booking ini?',
@@ -69,36 +27,74 @@ function BookDataTable({ bookData, searchInput }) {
             preConfirm: async () => {
                 try {
                     await deleteBooking(id);
-                    toast.success("Berhasil menghapus " + bookingCode);
+                    toast.success(`Berhasil menghapus ${bookingCode}`);
                 } catch (error) {
-                    toast.warning("Gagal menghapus data");
+                    toast.error("Gagal menghapus data");
                 }
             },
-            willClose: () => {
-                setSwalProps({});
-            }
+            willClose: () => setSwalProps({})
         });
-    };
+    }, [deleteBooking]);
 
-    const handleCheck = (bookingCode) => {
-        const url = `https://tiketq.com/eticket?bookingno=${bookingCode}`;
-        window.open(url, '_blank');
-    };
-
-    const handleIssue = async (bookingCode, nominal) => {
+    const handleIssue = useCallback(async (bookingCode, nominal) => {
         try {
             const response = await issueTicket({ bookingCode, nominal });
             toast.success(response.msg);
         } catch (err) {
-            toast.error(err);
+            toast.error(err.message);
         }
-    };
+    }, [issueTicket]);
 
-    const data = useMemo(() => {
+    const columns = useMemo(() => [
+        {
+            Header: 'Status',
+            accessor: 'payment_status',
+            Cell: ({ value }) => (value ? 'Issued' : 'Book')
+        },
+        {
+            Header: '',
+            accessor: 'actions',
+            Cell: ({ row }) => (
+                <div className="flex space-x-2">
+                    <button
+                        onClick={() => handleIssue(row.original.bookingCode, row.original.nominal)}
+                        className="text-blue-500 hover:text-blue-700"
+                        aria-label="Issue Ticket"
+                    >
+                        <i className='fa fa-check'></i>
+                    </button>
+                    <button
+                        onClick={() => handleCheck(row.original.bookingCode)}
+                        className="text-green-500 hover:text-green-700"
+                        aria-label="Check Ticket"
+                    >
+                        <i className="fa fa-plane"></i>
+                    </button>
+                    <button
+                        onClick={() => handleDelete(row.original._id, row.original.bookingCode)}
+                        className="text-red-500 hover:text-red-700"
+                        aria-label="Delete Booking"
+                    >
+                        <i className='fa fa-trash'></i>
+                    </button>
+                </div>
+            )
+        },
+        { Header: 'Booking No', accessor: 'bookingCode' },
+        { Header: 'Nominal', accessor: 'nominal', Cell: ({ value }) => formatNominal(value) },
+        { Header: 'Berangkat', accessor: 'departureDate', Cell: ({ value }) => formatDate(value) },
+        { Header: 'Asal', accessor: 'origin' },
+        { Header: 'Tujuan', accessor: 'destination' },
+        { Header: 'No. HP', accessor: 'mobile_number' },
+        { Header: 'Nama', accessor: 'name' },
+        { Header: 'Tgl Booking', accessor: 'book_date', Cell: ({ value }) => formatDate(value) },
+    ], [handleCheck, handleDelete, handleIssue]);
+
+    const filteredData = useMemo(() => {
         if (searchInput) {
             return bookData.filter(row =>
-                Object.values(row).some(
-                    val => String(val).toLowerCase().includes(searchInput.toLowerCase())
+                Object.values(row).some(val =>
+                    String(val).toLowerCase().includes(searchInput.toLowerCase())
                 )
             );
         }
@@ -123,7 +119,7 @@ function BookDataTable({ bookData, searchInput }) {
     } = useTable(
         {
             columns,
-            data,
+            data: filteredData,
             initialState: { pageIndex: 0, pageSize: 10 },
         },
         useGlobalFilter,
@@ -131,74 +127,84 @@ function BookDataTable({ bookData, searchInput }) {
     );
 
     return (
-        <div className="overflow-x-auto">
+        <div className="w-full overflow-x-auto">
             <SweetAlert2 {...swalProps} onConfirm={() => setSwalProps({})} onCancel={() => setSwalProps({})} />
-            <table {...getTableProps()} className="min-w-full bg-white border">
+            <table {...getTableProps()} className="min-w-full bg-white border border-gray-200">
                 <thead>
-                    {headerGroups.map((headerGroup, i) => (
-                        <tr key={i} {...headerGroup.getHeaderGroupProps()} className="bg-gray-200 text-xs">
+                    {headerGroups.map(headerGroup => (
+                        <tr {...headerGroup.getHeaderGroupProps()} className="bg-teal-100 border-b border-gray-300 text-xs">
                             {headerGroup.headers.map(column => (
-                                <th key={column.id} {...column.getHeaderProps()} className="p-2 border text-left">
+                                <th {...column.getHeaderProps()} className="px-4 py-2 text-left">
                                     {column.render('Header')}
+                                    <span>
+                                        {column.isSorted
+                                            ? column.isSortedDesc
+                                                ? ' 🔽'
+                                                : ' 🔼'
+                                            : ''}
+                                    </span>
                                 </th>
                             ))}
                         </tr>
                     ))}
                 </thead>
                 <tbody {...getTableBodyProps()}>
-                    {page.reverse().map((row) => {
+                    {page.length ? page.map(row => {
                         prepareRow(row);
                         return (
-                            <tr key={row.original._id} {...row.getRowProps()} className="border-b text-xs">
-                                {console.log(row)}
+                            <tr {...row.getRowProps()} className="border-b text-xs">
                                 {row.cells.map(cell => (
-                                    <td key={cell.column.id} {...cell.getCellProps()} className="p-2 border">
+                                    <td {...cell.getCellProps()} className="px-4 py-2">
                                         {cell.render('Cell')}
                                     </td>
                                 ))}
                             </tr>
                         );
-                    })}
+                    }) : (
+                        <tr>
+                            <td colSpan={columns.length} className="px-4 py-2 text-center">No data available</td>
+                        </tr>
+                    )}
                 </tbody>
             </table>
             <div className="pagination flex justify-between items-center mt-4 w-full sm:w-1/2 md:w-1/4">
                 <button
                     onClick={() => gotoPage(0)}
                     disabled={!canPreviousPage}
-                    className="p-2 border rounded disabled:opacity-50"
+                    className="bg-teal-500 text-white px-2 py-1 rounded-md hover:bg-teal-600 disabled:opacity-50 text-xs"
                 >
                     {'<<'}
                 </button>
                 <button
                     onClick={() => previousPage()}
                     disabled={!canPreviousPage}
-                    className="p-2 border rounded disabled:opacity-50"
+                    className="bg-teal-500 text-white px-2 py-1 rounded-md hover:bg-teal-600 disabled:opacity-50 text-xs"
                 >
                     {'<'}
                 </button>
-                <span>
-                    <strong className='text-xs'>
+                <span className="text-xs">
+                    <strong>
                         {pageIndex + 1} dari {pageOptions.length}
-                    </strong>{' '}
+                    </strong>
                 </span>
                 <button
                     onClick={() => nextPage()}
                     disabled={!canNextPage}
-                    className="p-2 border rounded disabled:opacity-50"
+                    className="bg-teal-500 text-white px-2 py-1 rounded-md hover:bg-teal-600 disabled:opacity-50 text-xs"
                 >
                     {'>'}
                 </button>
                 <button
                     onClick={() => gotoPage(pageCount - 1)}
                     disabled={!canNextPage}
-                    className="p-2 border rounded disabled:opacity-50"
+                    className="bg-teal-500 text-white px-2 py-1 rounded-md hover:bg-teal-600 disabled:opacity-50 text-xs"
                 >
                     {'>>'}
                 </button>
                 <select
                     value={pageSize}
                     onChange={e => setPageSize(Number(e.target.value))}
-                    className="p-2 border rounded text-xs"
+                    className="p-1 border rounded text-xs"
                 >
                     {[10, 20, 30, 40, 50].map(size => (
                         <option key={size} value={size}>
@@ -207,8 +213,9 @@ function BookDataTable({ bookData, searchInput }) {
                     ))}
                 </select>
             </div>
+
         </div>
     );
-}
+};
 
 export default BookDataTable;

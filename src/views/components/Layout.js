@@ -1,66 +1,71 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { AuthContext } from '../../contexts/auth/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Layout = ({ children }) => {
   const { username, setIsAuthenticated } = React.useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleLogout = () => {
-    setIsAuthenticated(false)
-    navigate('/login')
-  }
+    setIsAuthenticated(false);
+    navigate('/login');
+  };
 
+  const handleSidebarToggle = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const isActive = (path) => location.pathname === path ? 'text-white bg-orange-500' : 'text-gray-300';
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="bg-gray-800 text-white p-4 sticky top-0 z-50">
-        <h1 className="text-xl">Halo,{" "}<span className='text-orange-500'>{ username }</span> <button className='text-xs ml-10 text-orange-400 hover:text-orange-800' onClick={() => handleLogout()}>Logout</button></h1>
+      <header className="bg-gray-800 text-white p-4 sticky top-0 z-50 flex items-center justify-between">
+        <h1 className="text-xl flex items-center">
+          Halo, <span className='text-orange-500 ml-2'>{username}</span>
+        </h1>
+        <button className="text-xs text-orange-400 hover:text-orange-800 ml-4" onClick={handleLogout}>Logout</button>
+        <button className="text-white sm:hidden ml-4" onClick={handleSidebarToggle}>
+          {isSidebarOpen ? (
+            <i className="fas fa-times h-6 w-6"></i>
+          ) : (
+            <i className="fas fa-bars h-6 w-6"></i>
+          )}
+        </button>
       </header>
       <div className="flex flex-1">
-        <aside className="bg-gray-700 text-white w-16 sm:w-1/5">
-          <nav>
-            <ul className="hidden sm:block">
-              <li className="mb-2 hover:bg-gray-800 hover:cursor-pointer flex items-center">
-                <a href="/" className="flex items-center hover:text-blue-500 px-6 pt-6">
+        <aside className={`bg-gray-700 text-white w-64 sm:w-1/5 fixed top-0 left-0 h-full transition-transform transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} sm:relative sm:translate-x-0`}>
+          <nav className="flex flex-col h-full justify-between">
+            <ul className="flex flex-col justify-center flex-1">
+              <li className={`mb-2 hover:bg-gray-800 flex items-center ${isActive('/')}`}>
+                <a href="/" className="flex items-center px-6 py-4">
+                  <i className="fas fa-tachometer-alt mr-2"></i>
                   Dashboard
-                  <i className="fas fa-tachometer-alt ml-2"></i>
                 </a>
               </li>
-              <li className="mb-2 hover:bg-gray-800 hover:cursor-pointer flex items-center">
-                <a href="/book-data" className="flex items-center hover:text-blue-500 px-6 pt-4">
+              <li className={`mb-2 hover:bg-gray-800 flex items-center ${isActive('/book-data')}`}>
+                <a href="/book-data" className="flex items-center px-6 py-4">
+                  <i className="fas fa-book mr-2"></i>
                   Book Data
-                  <i className="fas fa-book ml-2"></i>
                 </a>
               </li>
-              <li className="mb-2 hover:bg-gray-800 hover:cursor-pointer flex items-center">
-                <a href="/admin" className="flex items-center hover:text-blue-500 px-6 pt-4">
+              <li className={`mb-2 hover:bg-gray-800 flex items-center ${isActive('/admin')}`}>
+                <a href="/admin" className="flex items-center px-6 py-4">
+                  <i className="fas fa-user-secret mr-2"></i>
                   Admin
-                  <i className="fas fa-user-secret ml-2"></i>
                 </a>
               </li>
-              <li className="mb-2 hover:bg-gray-800 hover:cursor-pointer flex items-center">
-                <a href="/user-list" className="flex items-center hover:text-blue-500 px-6 pt-4">
+              <li className={`mb-2 hover:bg-gray-800 flex items-center ${isActive('/user-list')}`}>
+                <a href="/user-list" className="flex items-center px-6 py-4">
+                  <i className="fas fa-user mr-2"></i>
                   User List
-                  <i className="fas fa-user ml-2"></i>
-                </a>
-              </li>
-            </ul>
-            <ul className="sm:hidden">
-              <li className="mb-2 hover:bg-gray-800 hover:cursor-pointer flex items-center px-6 pt-6">
-                <a href="/" className="flex items-center hover:text-blue-500">
-                  <i className="fas fa-tachometer-alt ml-2"></i>
-                </a>
-              </li>
-              <li className="mb-2 hover:bg-gray-800 hover:cursor-pointer flex items-center px-6 pt-4">
-                <a href="/book-data" className="flex items-center hover:text-blue-500">
-                  <i className="fas fa-book ml-2"></i>
                 </a>
               </li>
             </ul>
           </nav>
         </aside>
-        <main className="flex-1 p-4">
+        <main className="flex-1 p-4 ml-64 sm:ml-0">
           {children}
         </main>
       </div>

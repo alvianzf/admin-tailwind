@@ -1,12 +1,11 @@
 import React from "react"
-import Login from "../pages/Login"
-import Admin from "../pages/Admin/Admin"
-import UserList from "../pages/UserList/UserList"
-
 // pages import
 
 const Dashboard = React.lazy(() => import("../pages/Dashboard/Dashboard"))
 const BookData = React.lazy(() => import("../pages/BookData/BookData"))
+const Admin = React.lazy(() => import("../pages/Admin/Admin"))
+const UserList = React.lazy(() => import("../pages/UserList/UserList"))
+const Login = React.lazy(() => import("../pages/Login"))
 // routes
 
 const routes = [

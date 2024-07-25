@@ -38,9 +38,20 @@ const UserProvider = ({ children }) => {
         }
     }
 
+    const updateUser = async (id, payload) => {
+        try {
+            await UserServices.updateUser(id, payload);
+            const updated = await getAllUsers();
+            setUsers(updated.data)
+        } catch (error) {
+            return error
+        }
+    }
+
     const value = {
         deleteUser,
         registerUser,
+        updateUser,
         getAllUsers,
         users
     }
